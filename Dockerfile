@@ -6,8 +6,8 @@ RUN dnf install -y epel-release && \
     dnf install -y python39 python39-pip python39-devel && \
     dnf clean all
 
-RUN alternatives --set python /usr/bin/python3.9 && \
-    alternatives --set pip /usr/bin/pip3.9
+RUN ln -sf /usr/bin/python3.9 /usr/bin/python && \
+    ln -sf /usr/bin/pip3.9 /usr/bin/pip
 
 WORKDIR /app
 

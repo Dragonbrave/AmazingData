@@ -1,14 +1,13 @@
-# RockyLinux 8 (RHEL 8 compatible, glibc 2.28) for tgw .so compatibility
-FROM rockylinux:8
+# RockyLinux 9 (RHEL 9 compatible, glibc 2.34) for tgw .so compatibility
+FROM rockylinux:9
 
 RUN dnf install -y epel-release && \
-    dnf module enable -y python39 && \
-    dnf install -y python39 python39-pip python39-devel \
+    dnf install -y python3.10 python3.10-pip python3.10-devel \
                    gcc gcc-c++ make && \
     dnf clean all
 
-RUN ln -sf /usr/bin/python3.9 /usr/bin/python && \
-    ln -sf /usr/bin/pip3.9 /usr/bin/pip
+RUN ln -sf /usr/bin/python3.10 /usr/bin/python && \
+    ln -sf /usr/bin/pip3.10 /usr/bin/pip
 
 RUN pip install --upgrade pip
 
@@ -20,7 +19,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY lib/ ./lib/
 RUN pip install --no-cache-dir \
     ./lib/tgw-1.0.8.7-py3-none-any.whl \
-    ./lib/AmazingData-1.1.7-cp39-none-any.whl
+    ./lib/AmazingData-1.1.7-cp310-none-any.whl
 
 COPY . .
 

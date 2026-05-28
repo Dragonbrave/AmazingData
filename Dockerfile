@@ -2,12 +2,12 @@
 FROM rockylinux:8
 
 RUN dnf install -y epel-release && \
-    dnf module enable -y python310 && \
-    dnf install -y python310 python310-pip python310-devel && \
+    dnf module enable -y python39 && \
+    dnf install -y python39 python39-pip python39-devel && \
     dnf clean all
 
-RUN alternatives --set python /usr/bin/python3.10 && \
-    alternatives --set pip /usr/bin/pip3.10
+RUN alternatives --set python /usr/bin/python3.9 && \
+    alternatives --set pip /usr/bin/pip3.9
 
 WORKDIR /app
 
@@ -15,7 +15,7 @@ COPY lib/ ./lib/
 
 RUN pip install --no-cache-dir \
     ./lib/tgw-1.0.8.7-py3-none-any.whl \
-    ./lib/AmazingData-1.1.7-cp310-none-any.whl
+    ./lib/AmazingData-1.1.7-cp39-none-any.whl
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt

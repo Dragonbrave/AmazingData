@@ -1,5 +1,5 @@
 ./lib/tgw-1.0.8.7-py3-none-any.whl
-./lib/AmazingData-1.1.7-cp310-none-any.whl
+./lib/AmazingData-1.1.7-cp39-none-any.whl
 fastapi==0.115.6
 uvicorn[standard]==0.34.0
 pandas>=2.0.0

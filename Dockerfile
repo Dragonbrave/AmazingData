@@ -1,3 +1,4 @@
+# RockyLinux 8 (RHEL 8 compatible, glibc 2.28) for tgw .so compatibility
 FROM rockylinux:8
 
 RUN dnf install -y epel-release && \

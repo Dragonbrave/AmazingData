@@ -2,12 +2,12 @@
 FROM rockylinux:9
 
 RUN dnf install -y epel-release && \
-    dnf install -y python3.10 python3.10-pip python3.10-devel \
+    dnf install -y python3.11 python3.11-pip python3.11-devel \
                    gcc gcc-c++ make && \
     dnf clean all
 
-RUN ln -sf /usr/bin/python3.10 /usr/bin/python && \
-    ln -sf /usr/bin/pip3.10 /usr/bin/pip
+RUN ln -sf /usr/bin/python3.11 /usr/bin/python && \
+    ln -sf /usr/bin/pip3.11 /usr/bin/pip
 
 RUN pip install --upgrade pip
 
@@ -19,7 +19,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY lib/ ./lib/
 RUN pip install --no-cache-dir \
     ./lib/tgw-1.0.8.7-py3-none-any.whl \
-    ./lib/AmazingData-1.1.7-cp310-none-any.whl
+    ./lib/AmazingData-1.1.7-cp311-none-any.whl
 
 COPY . .
 

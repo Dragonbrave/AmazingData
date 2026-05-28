@@ -1,14 +1,12 @@
-FROM centos:7
+FROM rockylinux:8
 
-RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*.repo && \
-    sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*.repo
+RUN dnf install -y epel-release && \
+    dnf module enable -y python310 && \
+    dnf install -y python310 python310-pip python310-devel && \
+    dnf clean all
 
-RUN yum install -y https://repo.ius.io/ius-release-el7.rpm && \
-    yum install -y python310 python310-pip python310-devel && \
-    yum clean all
-
-RUN ln -sf /usr/bin/python3.10 /usr/bin/python && \
-    ln -sf /usr/bin/pip3.10 /usr/bin/pip
+RUN alternatives --set python /usr/bin/python3.10 && \
+    alternatives --set pip /usr/bin/pip3.10
 
 WORKDIR /app
 

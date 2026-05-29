@@ -23,14 +23,14 @@ class AmazingDataClient:
     def __init__(self):
         self._logged_in = False
         self._calendar = None
+        # 后台异步登录，不阻塞应用启动
+        t = threading.Thread(target=_do_login_subprocess, args=(self,), daemon=True)
+        t.start()
 
     # ==================== 登录 ====================
 
     def login(self):
-        if self._logged_in:
-            return
-        t = threading.Thread(target=_do_login_subprocess, args=(self,), daemon=True)
-        t.start()
+        """登录已在 __init__ 中异步启动"""
 
 
 def _do_login_subprocess(client_ref):

@@ -15,11 +15,8 @@ from sdk_client import client
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print("[lifespan] startup - calling client.login()", flush=True)
-    client.login()
-    print("[lifespan] startup - client.login() returned, yielding", flush=True)
+    # SDK 登录在后台线程异步执行，不阻塞启动
     yield
-    print("[lifespan] shutdown", flush=True)
 
 
 app = FastAPI(title="AmazingData API Service", version="2.0.0", lifespan=lifespan)

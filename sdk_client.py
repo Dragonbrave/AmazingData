@@ -4,8 +4,6 @@ import sys
 import os
 from typing import List, Dict, Optional, Union
 import pandas as pd
-import AmazingData as ad
-from AmazingData.utils.constant import Period
 
 from config import (
     AMAZINGDATA_USERNAME,
@@ -16,6 +14,16 @@ from config import (
     CALENDAR_CACHE_TTL,
 )
 from utils import cache, cached, df_to_records
+
+# 延迟加载 AmazingData C 扩展，只在首次调用 SDK 时加载
+_ad = None
+
+def _get_ad():
+    global _ad
+    if _ad is None:
+        import AmazingData as ad
+        _ad = ad
+    return _ad
 
 
 class AmazingDataClient:
@@ -72,14 +80,14 @@ except Exception as e:
     def get_calendar(self) -> List[int]:
         if self._calendar is not None:
             return self._calendar
-        self._calendar = ad.BaseData().get_calendar()
+        self._calendar = _get_ad().BaseData().get_calendar()
         return self._calendar
 
     def get_code_list(self, security_type: str = "EXTRA_STOCK_A") -> List[str]:
-        return ad.BaseData().get_code_list(security_type=security_type)
+        return _get_ad().BaseData().get_code_list(security_type=security_type)
 
     def get_code_info(self, security_type: str = "EXTRA_STOCK_A") -> list:
-        df = ad.BaseData().get_code_info(security_type=security_type)
+        df = _get_ad().BaseData().get_code_info(security_type=security_type)
         return df_to_records(df)
 
     def get_hist_code_list(
@@ -94,15 +102,15 @@ except Exception as e:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        return ad.BaseData().get_hist_code_list(
+        return _get_ad().BaseData().get_hist_code_list(
             security_type=security_type, start_date=start_date, end_date=end_date, **kwargs
         )
 
     def get_future_code_list(self, security_type: str = "ZJ_FUTURE") -> List[str]:
-        return ad.BaseData().get_future_code_list(security_type=security_type)
+        return _get_ad().BaseData().get_future_code_list(security_type=security_type)
 
     def get_option_code_list(self, security_type: str = "EXTRA_ETF_OP") -> List[str]:
-        return ad.BaseData().get_option_code_list(security_type=security_type)
+        return _get_ad().BaseData().get_option_code_list(security_type=security_type)
 
     def get_backward_factor(
         self,
@@ -110,7 +118,7 @@ except Exception as e:
         local_path: Optional[str] = None,
         is_local: bool = False,
     ) -> list:
-        return df_to_records(ad.BaseData().get_backward_factor(
+        return df_to_records(_get_ad().BaseData().get_backward_factor(
             code_list, local_path=local_path, is_local=is_local
         ))
 
@@ -120,7 +128,7 @@ except Exception as e:
         local_path: Optional[str] = None,
         is_local: bool = False,
     ) -> list:
-        return df_to_records(ad.BaseData().get_adj_factor(
+        return df_to_records(_get_ad().BaseData().get_adj_factor(
             code_list, local_path=local_path, is_local=is_local
         ))
 
@@ -129,27 +137,30 @@ except Exception as e:
         local_path: Optional[str] = None,
         is_local: bool = False,
     ) -> list:
-        return df_to_records(ad.InfoData().get_bj_code_mapping(
+        return df_to_records(_get_ad().InfoData().get_bj_code_mapping(
             local_path=local_path, is_local=is_local
         ))
 
     # ==================== 行情数据 ====================
 
-    PERIOD_MAP = {
-        "1min": Period.min1.value, "3min": Period.min3.value, "5min": Period.min5.value,
-        "10min": Period.min10.value, "15min": Period.min15.value, "30min": Period.min30.value,
-        "60min": Period.min60.value, "120min": Period.min120.value,
-        "day": Period.day.value, "week": Period.week.value,
-        "month": Period.month.value, "season": Period.season.value, "year": Period.year.value,
-    }
+    def _get_period_value(self, period_key: str, default: str = "day"):
+        P = _get_ad().utils.constant.Period
+        m = {
+            "1min": P.min1.value, "3min": P.min3.value, "5min": P.min5.value,
+            "10min": P.min10.value, "15min": P.min15.value, "30min": P.min30.value,
+            "60min": P.min60.value, "120min": P.min120.value,
+            "day": P.day.value, "week": P.week.value,
+            "month": P.month.value, "season": P.season.value, "year": P.year.value,
+        }
+        return m.get(period_key, m[default])
 
     def query_kline(
         self, code_list: List[str], begin_date: int, end_date: int,
         period: str = "day", begin_time: Optional[int] = None, end_time: Optional[int] = None,
     ) -> Dict[str, list]:
-        p = self.PERIOD_MAP.get(period, Period.day.value)
+        p = self._get_period_value(period)
         calendar = self.get_calendar()
-        market_data = ad.MarketData(calendar)
+        market_data = _get_ad().MarketData(calendar)
         kwargs = {}
         if begin_time is not None:
             kwargs["begin_time"] = begin_time
@@ -163,7 +174,7 @@ except Exception as e:
         begin_time: Optional[int] = None, end_time: Optional[int] = None,
     ) -> Dict[str, list]:
         calendar = self.get_calendar()
-        market_data = ad.MarketData(calendar)
+        market_data = _get_ad().MarketData(calendar)
         kwargs = {}
         if begin_time is not None:
             kwargs["begin_time"] = begin_time
@@ -175,7 +186,7 @@ except Exception as e:
     # ==================== 证券基本信息 ====================
 
     def get_stock_basic(self, code_list: List[str]) -> list:
-        return df_to_records(ad.InfoData().get_stock_basic(code_list))
+        return df_to_records(_get_ad().InfoData().get_stock_basic(code_list))
 
     def get_history_stock_status(
         self, code_list: List[str],
@@ -191,7 +202,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(ad.InfoData().get_history_stock_status(code_list, **kwargs))
+        return df_to_records(_get_ad().InfoData().get_history_stock_status(code_list, **kwargs))
 
     # ==================== 财务报表 ====================
 
@@ -209,7 +220,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        result = ad.InfoData().get_balance_sheet(code_list, **kwargs)
+        result = _get_ad().InfoData().get_balance_sheet(code_list, **kwargs)
         return {code: df_to_records(df) for code, df in result.items()}
 
     def get_cash_flow(
@@ -226,7 +237,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        result = ad.InfoData().get_cash_flow(code_list, **kwargs)
+        result = _get_ad().InfoData().get_cash_flow(code_list, **kwargs)
         return {code: df_to_records(df) for code, df in result.items()}
 
     def get_income(
@@ -243,7 +254,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        result = ad.InfoData().get_income(code_list, **kwargs)
+        result = _get_ad().InfoData().get_income(code_list, **kwargs)
         return {code: df_to_records(df) for code, df in result.items()}
 
     def get_profit_express(
@@ -260,7 +271,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(ad.InfoData().get_profit_express(code_list, **kwargs))
+        return df_to_records(_get_ad().InfoData().get_profit_express(code_list, **kwargs))
 
     def get_forecast(
         self, code_list: List[str],
@@ -276,7 +287,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(ad.InfoData().get_forecast(code_list, **kwargs))
+        return df_to_records(_get_ad().InfoData().get_forecast(code_list, **kwargs))
 
     # ==================== 股东股本数据 ====================
 
@@ -294,7 +305,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(ad.InfoData().get_top10_holder(code_list, **kwargs))
+        return df_to_records(_get_ad().InfoData().get_top10_holder(code_list, **kwargs))
 
     def get_shareholder_num(
         self, code_list: List[str],
@@ -310,7 +321,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(ad.InfoData().get_shareholder_num(code_list, **kwargs))
+        return df_to_records(_get_ad().InfoData().get_shareholder_num(code_list, **kwargs))
 
     def get_share_structure(
         self, code_list: List[str],
@@ -326,7 +337,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(ad.InfoData().get_share_structure(code_list, **kwargs))
+        return df_to_records(_get_ad().InfoData().get_share_structure(code_list, **kwargs))
 
     def get_pledge_info(
         self, code_list: List[str],
@@ -342,7 +353,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(ad.InfoData().get_pledge_info(code_list, **kwargs))
+        return df_to_records(_get_ad().InfoData().get_pledge_info(code_list, **kwargs))
 
     def get_restricted_share(
         self, code_list: List[str],
@@ -358,7 +369,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(ad.InfoData().get_restricted_share(code_list, **kwargs))
+        return df_to_records(_get_ad().InfoData().get_restricted_share(code_list, **kwargs))
 
     # ==================== 股东权益 ====================
 
@@ -376,7 +387,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(ad.InfoData().get_dividend(code_list, **kwargs))
+        return df_to_records(_get_ad().InfoData().get_dividend(code_list, **kwargs))
 
     def get_allotment(
         self, code_list: List[str],
@@ -392,7 +403,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(ad.InfoData().get_allotment(code_list, **kwargs))
+        return df_to_records(_get_ad().InfoData().get_allotment(code_list, **kwargs))
 
     # ==================== 融资融券 ====================
 
@@ -410,7 +421,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(ad.InfoData().get_margin_trade(code_list, **kwargs))
+        return df_to_records(_get_ad().InfoData().get_margin_trade(code_list, **kwargs))
 
     def get_margin_detail(
         self, code_list: List[str],
@@ -426,7 +437,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(ad.InfoData().get_margin_detail(code_list, **kwargs))
+        return df_to_records(_get_ad().InfoData().get_margin_detail(code_list, **kwargs))
 
     # ==================== 市场异动 ====================
 
@@ -444,7 +455,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(ad.InfoData().get_block_trade(code_list, **kwargs))
+        return df_to_records(_get_ad().InfoData().get_block_trade(code_list, **kwargs))
 
     def get_abnormal_trade(
         self, code_list: List[str],
@@ -460,7 +471,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(ad.InfoData().get_abnormal_trade(code_list, **kwargs))
+        return df_to_records(_get_ad().InfoData().get_abnormal_trade(code_list, **kwargs))
 
     # ==================== ETF 数据 ====================
 
@@ -478,7 +489,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(ad.InfoData().get_etf_daily_subscription(code_list, **kwargs))
+        return df_to_records(_get_ad().InfoData().get_etf_daily_subscription(code_list, **kwargs))
 
     def get_etf_share(
         self, code_list: List[str],
@@ -494,7 +505,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(ad.InfoData().get_etf_share(code_list, **kwargs))
+        return df_to_records(_get_ad().InfoData().get_etf_share(code_list, **kwargs))
 
     def get_etf_iopv(
         self, code_list: List[str],
@@ -510,18 +521,18 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(ad.InfoData().get_etf_iopv(code_list, **kwargs))
+        return df_to_records(_get_ad().InfoData().get_etf_iopv(code_list, **kwargs))
 
     # ==================== 申万指数 ====================
 
     def get_shenwan_index_info(self) -> list:
-        return df_to_records(ad.InfoData().get_shenwan_index_info())
+        return df_to_records(_get_ad().InfoData().get_shenwan_index_info())
 
     def get_shenwan_index_component(self, code_list: List[str]) -> list:
-        return df_to_records(ad.InfoData().get_shenwan_index_component(code_list))
+        return df_to_records(_get_ad().InfoData().get_shenwan_index_component(code_list))
 
     def get_shenwan_index_component_weight(self, code_list: List[str]) -> list:
-        return df_to_records(ad.InfoData().get_shenwan_index_component_weight(code_list))
+        return df_to_records(_get_ad().InfoData().get_shenwan_index_component_weight(code_list))
 
     def get_shenwan_index_data(
         self, code_list: List[str],
@@ -532,14 +543,14 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(ad.InfoData().get_shenwan_index_data(code_list, **kwargs))
+        return df_to_records(_get_ad().InfoData().get_shenwan_index_data(code_list, **kwargs))
 
     # ==================== 行业指数 ====================
 
     def get_industry_index_info(
         self, local_path: Optional[str] = None, is_local: bool = False,
     ) -> list:
-        return df_to_records(ad.InfoData().get_industry_index_info(
+        return df_to_records(_get_ad().InfoData().get_industry_index_info(
             local_path=local_path, is_local=is_local
         ))
 
@@ -547,7 +558,7 @@ except Exception as e:
         self, code_list: List[str],
         local_path: Optional[str] = None, is_local: bool = False,
     ) -> list:
-        return df_to_records(ad.InfoData().get_industry_index_component(
+        return df_to_records(_get_ad().InfoData().get_industry_index_component(
             code_list, local_path=local_path, is_local=is_local
         ))
 
@@ -555,7 +566,7 @@ except Exception as e:
         self, code_list: List[str],
         local_path: Optional[str] = None, is_local: bool = False,
     ) -> list:
-        return df_to_records(ad.InfoData().get_industry_index_component_weight(
+        return df_to_records(_get_ad().InfoData().get_industry_index_component_weight(
             code_list, local_path=local_path, is_local=is_local
         ))
 
@@ -568,7 +579,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(ad.InfoData().get_industry_index_data(code_list, **kwargs))
+        return df_to_records(_get_ad().InfoData().get_industry_index_data(code_list, **kwargs))
 
     # ==================== 可转债 ====================
 
@@ -586,7 +597,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(ad.InfoData().get_cb_info(code_list, **kwargs))
+        return df_to_records(_get_ad().InfoData().get_cb_info(code_list, **kwargs))
 
     def get_cb_share(
         self, code_list: List[str],
@@ -602,7 +613,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(ad.InfoData().get_cb_share(code_list, **kwargs))
+        return df_to_records(_get_ad().InfoData().get_cb_share(code_list, **kwargs))
 
     def get_cb_conversion(
         self, code_list: List[str],
@@ -618,7 +629,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(ad.InfoData().get_cb_conversion(code_list, **kwargs))
+        return df_to_records(_get_ad().InfoData().get_cb_conversion(code_list, **kwargs))
 
     def get_cb_conversion_change(
         self, code_list: List[str],
@@ -634,7 +645,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(ad.InfoData().get_cb_conversion_change(code_list, **kwargs))
+        return df_to_records(_get_ad().InfoData().get_cb_conversion_change(code_list, **kwargs))
 
     def get_cb_redemption(
         self, code_list: List[str],
@@ -650,7 +661,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(ad.InfoData().get_cb_redemption(code_list, **kwargs))
+        return df_to_records(_get_ad().InfoData().get_cb_redemption(code_list, **kwargs))
 
     def get_cb_putback(
         self, code_list: List[str],
@@ -666,7 +677,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(ad.InfoData().get_cb_putback(code_list, **kwargs))
+        return df_to_records(_get_ad().InfoData().get_cb_putback(code_list, **kwargs))
 
     def get_cb_call(
         self, code_list: List[str],
@@ -682,7 +693,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(ad.InfoData().get_cb_call(code_list, **kwargs))
+        return df_to_records(_get_ad().InfoData().get_cb_call(code_list, **kwargs))
 
     def get_cb_suspend(
         self, code_list: List[str],
@@ -698,7 +709,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(ad.InfoData().get_cb_suspend(code_list, **kwargs))
+        return df_to_records(_get_ad().InfoData().get_cb_suspend(code_list, **kwargs))
 
     # ==================== 期权 ====================
 
@@ -716,7 +727,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(ad.InfoData().get_option_info(code_list, **kwargs))
+        return df_to_records(_get_ad().InfoData().get_option_info(code_list, **kwargs))
 
     def get_option_contract(
         self, code_list: List[str],
@@ -732,7 +743,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(ad.InfoData().get_option_contract(code_list, **kwargs))
+        return df_to_records(_get_ad().InfoData().get_option_contract(code_list, **kwargs))
 
     def get_option_contract_change(
         self, code_list: List[str],
@@ -748,7 +759,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(ad.InfoData().get_option_contract_change(code_list, **kwargs))
+        return df_to_records(_get_ad().InfoData().get_option_contract_change(code_list, **kwargs))
 
     # ==================== 国债 ====================
 
@@ -766,7 +777,7 @@ except Exception as e:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(ad.InfoData().get_treasury(code_list, **kwargs))
+        return df_to_records(_get_ad().InfoData().get_treasury(code_list, **kwargs))
 
 
 client = AmazingDataClient()

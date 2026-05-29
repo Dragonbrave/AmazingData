@@ -17,8 +17,7 @@ RUN wget -q https://www.openssl.org/source/openssl-1.1.1w.tar.gz && \
 RUN wget -q https://www.python.org/ftp/python/3.11.9/Python-3.11.9.tgz && \
     tar xzf Python-3.11.9.tgz && \
     cd Python-3.11.9 && \
-    ./configure --enable-optimizations \
-        --with-system-ffi \
+    ./configure --with-system-ffi \
         --with-openssl=/usr/local/openssl \
         --with-openssl-rpath=auto && \
     make -j$(nproc) && \

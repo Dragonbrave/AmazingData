@@ -59,4 +59,16 @@ def df_to_records(df: pd.DataFrame) -> list:
         df_copy = df_copy.reset_index()
         for col in df_copy.select_dtypes(include=["datetime64"]).columns:
             df_copy[col] = df_copy[col].astype(str)
-    return df_copy.to_dict(orient="records")
+    records = df_copy.to_dict(orient="records")
+    del df, df_copy
+    return records
+
+
+def dict_df_to_records(result: dict) -> dict:
+    """dict[code, DataFrame] 转 dict[code, records]，并释放 DataFrame 内存"""
+    records = {}
+    for code, df in result.items():
+        records[code] = df_to_records(df)
+        del df
+    del result
+    return records

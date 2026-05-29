@@ -12,7 +12,7 @@ from config import (
     CACHE_TTL_SECONDS,
     CALENDAR_CACHE_TTL,
 )
-from utils import cache, cached, df_to_records
+from utils import cache, cached, df_to_records, dict_df_to_records
 
 
 class AmazingDataClient:
@@ -20,6 +20,7 @@ class AmazingDataClient:
     def __init__(self):
         self._logged_in = False
         self._login_attempted = False
+        self._login_event = threading.Event()
         self._calendar = None
         self._ad = None
 
@@ -32,21 +33,25 @@ class AmazingDataClient:
         self.ensure_login()
         return self._ad
 
-    # ==================== 登录（首次 SDK 调用时触发）====================
+    # ==================== 登录（首次 SDK 调用时阻塞等待）====================
 
     def ensure_login(self):
-        if self._logged_in or self._login_attempted:
+        if self._login_event.is_set():
+            return
+        if self._login_attempted:
+            self._login_event.wait(timeout=15)
             return
         self._login_attempted = True
         t = threading.Thread(target=self._do_login, daemon=True)
         t.start()
+        self._login_event.wait(timeout=15)
 
     def _do_login(self):
         try:
             print(f"[login] 登录 host={AMAZINGDATA_HOST}:{AMAZINGDATA_PORT}", flush=True)
             import socket
             socket.setdefaulttimeout(5)
-            self._get_ad().login(
+            self._ad.login(
                 username=AMAZINGDATA_USERNAME,
                 password=AMAZINGDATA_PASSWORD,
                 host=AMAZINGDATA_HOST,
@@ -57,21 +62,43 @@ class AmazingDataClient:
         except Exception as e:
             self._logged_in = False
             print(f"[login] 失败: {e}", flush=True)
+        finally:
+            self._login_event.set()
 
     # ==================== 基础数据 ====================
 
     def get_calendar(self) -> List[int]:
         if self._calendar is not None:
             return self._calendar
-        self._calendar = self._get_ad().BaseData().get_calendar()
-        return self._calendar
+        ad = self._get_ad()
+        import time
+        for attempt in range(3):
+            result = ad.BaseData().get_calendar()
+            if result is not None:
+                self._calendar = result
+                return self._calendar
+            time.sleep(1)
+        raise RuntimeError("SDK get_calendar() 返回 None，请稍后重试")
 
     def get_code_list(self, security_type: str = "EXTRA_STOCK_A") -> List[str]:
-        return self._get_ad().BaseData().get_code_list(security_type=security_type)
+        cache_key = f"code_list:{security_type}"
+        cached_val = cache.get(cache_key)
+        if cached_val is not None:
+            return cached_val
+        result = self._get_ad().BaseData().get_code_list(security_type=security_type)
+        cache.set(cache_key, result, ttl=CACHE_TTL_SECONDS)
+        return result
 
     def get_code_info(self, security_type: str = "EXTRA_STOCK_A") -> list:
+        cache_key = f"code_info:{security_type}"
+        cached_val = cache.get(cache_key)
+        if cached_val is not None:
+            return cached_val
         df = self._get_ad().BaseData().get_code_info(security_type=security_type)
-        return df_to_records(df)
+        result = df_to_records(df)
+        del df
+        cache.set(cache_key, result, ttl=CACHE_TTL_SECONDS)
+        return result
 
     def get_hist_code_list(
         self,
@@ -150,7 +177,12 @@ class AmazingDataClient:
         if end_time is not None:
             kwargs["end_time"] = end_time
         result = market_data.query_kline(code_list, begin_date=begin_date, end_date=end_date, period=p, **kwargs)
-        return {code: df_to_records(df) for code, df in result.items()}
+        records = {}
+        for code, df in result.items():
+            records[code] = df_to_records(df)
+            del df
+        del result
+        return records
 
     def query_snapshot(
         self, code_list: List[str], begin_date: int, end_date: int,
@@ -164,7 +196,12 @@ class AmazingDataClient:
         if end_time is not None:
             kwargs["end_time"] = end_time
         result = market_data.query_snapshot(code_list, begin_date=begin_date, end_date=end_date, **kwargs)
-        return {code: df_to_records(df) for code, df in result.items()}
+        records = {}
+        for code, df in result.items():
+            records[code] = df_to_records(df)
+            del df
+        del result
+        return records
 
     # ==================== 证券基本信息 ====================
 
@@ -204,7 +241,7 @@ class AmazingDataClient:
         if end_date:
             kwargs["end_date"] = end_date
         result = self._get_ad().InfoData().get_balance_sheet(code_list, **kwargs)
-        return {code: df_to_records(df) for code, df in result.items()}
+        return dict_df_to_records(result)
 
     def get_cash_flow(
         self, code_list: List[str],
@@ -221,7 +258,7 @@ class AmazingDataClient:
         if end_date:
             kwargs["end_date"] = end_date
         result = self._get_ad().InfoData().get_cash_flow(code_list, **kwargs)
-        return {code: df_to_records(df) for code, df in result.items()}
+        return dict_df_to_records(result)
 
     def get_income(
         self, code_list: List[str],
@@ -238,7 +275,7 @@ class AmazingDataClient:
         if end_date:
             kwargs["end_date"] = end_date
         result = self._get_ad().InfoData().get_income(code_list, **kwargs)
-        return {code: df_to_records(df) for code, df in result.items()}
+        return dict_df_to_records(result)
 
     def get_profit_express(
         self, code_list: List[str],

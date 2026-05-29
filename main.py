@@ -15,13 +15,7 @@ from sdk_client import client
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    try:
-        client.login()
-        print("AmazingData SDK 登录成功", file=sys.stderr)
-    except Exception as e:
-        print(f"AmazingData SDK 登录失败: {e}", file=sys.stderr)
-        traceback.print_exc()
-        print("服务将以降级模式运行（部分接口可能不可用）", file=sys.stderr)
+    client.login()
     yield
 
 

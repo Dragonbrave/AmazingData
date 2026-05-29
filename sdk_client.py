@@ -1,3 +1,4 @@
+import threading
 from typing import List, Dict, Optional, Union
 import pandas as pd
 import AmazingData as ad
@@ -25,15 +26,24 @@ class AmazingDataClient:
     def login(self):
         if self._logged_in:
             return
-        print(f"正在连接 AmazingData SDK (host={AMAZINGDATA_HOST}:{AMAZINGDATA_PORT}) ...")
-        ad.login(
-            username=AMAZINGDATA_USERNAME,
-            password=AMAZINGDATA_PASSWORD,
-            host=AMAZINGDATA_HOST,
-            port=AMAZINGDATA_PORT,
-        )
         self._logged_in = True
-        print(f"AmazingData SDK 登录成功 (host={AMAZINGDATA_HOST}:{AMAZINGDATA_PORT})")
+        def _do_login():
+            try:
+                print(f"正在连接 AmazingData SDK (host={AMAZINGDATA_HOST}:{AMAZINGDATA_PORT}) ...", flush=True)
+                ad.login(
+                    username=AMAZINGDATA_USERNAME,
+                    password=AMAZINGDATA_PASSWORD,
+                    host=AMAZINGDATA_HOST,
+                    port=AMAZINGDATA_PORT,
+                )
+                print(f"AmazingData SDK 登录成功 (host={AMAZINGDATA_HOST}:{AMAZINGDATA_PORT})", flush=True)
+            except Exception as e:
+                self._logged_in = False
+                print(f"AmazingData SDK 登录失败: {e}", flush=True)
+                import traceback
+                traceback.print_exc()
+        t = threading.Thread(target=_do_login, daemon=True)
+        t.start()
 
     # ==================== 基础数据 ====================
 

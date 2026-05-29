@@ -8,8 +8,10 @@ from config import (
     AMAZINGDATA_PASSWORD,
     AMAZINGDATA_HOST,
     AMAZINGDATA_PORT,
+    CACHE_TTL_SECONDS,
+    CALENDAR_CACHE_TTL,
 )
-from utils import cache, cached, CACHE_TTL_SECONDS, CALENDAR_CACHE_TTL, df_to_records
+from utils import cache, cached, df_to_records
 
 
 class AmazingDataClient:

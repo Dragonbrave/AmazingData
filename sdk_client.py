@@ -1,7 +1,7 @@
 from typing import List, Dict, Optional, Union
 import pandas as pd
 import AmazingData as ad
-from AmazingData.constant import Period
+from AmazingData.utils.constant import Period
 
 from config import (
     AMAZINGDATA_USERNAME,

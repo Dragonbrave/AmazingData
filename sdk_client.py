@@ -25,6 +25,7 @@ class AmazingDataClient:
     def login(self):
         if self._logged_in:
             return
+        print(f"正在连接 AmazingData SDK (host={AMAZINGDATA_HOST}:{AMAZINGDATA_PORT}) ...")
         ad.login(
             username=AMAZINGDATA_USERNAME,
             password=AMAZINGDATA_PASSWORD,

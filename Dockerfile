@@ -1,7 +1,6 @@
 FROM rockylinux:8
 
-RUN dnf module enable -y python3.11:3.11 && \
-    dnf install -y python3.11 python3.11-pip && \
+RUN dnf install -y python3.11 python3.11-pip && \
     dnf clean all
 
 RUN ln -sf /usr/bin/python3.11 /usr/bin/python && \

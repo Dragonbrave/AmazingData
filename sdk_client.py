@@ -1,7 +1,6 @@
 import threading
-import subprocess
-import sys
-import os
+
+
 from typing import List, Dict, Optional, Union
 import pandas as pd
 
@@ -23,8 +22,6 @@ class AmazingDataClient:
         self._login_attempted = False
         self._calendar = None
         self._ad = None
-        # 后台异步登录（短超时，不阻塞启动）
-        self._start_login()
 
     # ==================== 延迟加载 SDK ====================
 
@@ -32,56 +29,34 @@ class AmazingDataClient:
         if self._ad is None:
             import AmazingData as ad
             self._ad = ad
+        self.ensure_login()
         return self._ad
 
-    # ==================== 登录 ====================
+    # ==================== 登录（首次 SDK 调用时触发）====================
 
-    def _start_login(self):
+    def ensure_login(self):
         if self._logged_in or self._login_attempted:
             return
         self._login_attempted = True
-        t = threading.Thread(target=_do_login_subprocess, args=(self,), daemon=True)
+        t = threading.Thread(target=self._do_login, daemon=True)
         t.start()
 
-    def login(self):
-        self._start_login()
-
-
-def _do_login_subprocess(client_ref):
-    """在子进程中执行 SDK 登录，防止 C 扩展崩溃导致主进程退出"""
-    print(f"[login] 开始子进程登录 host={AMAZINGDATA_HOST}:{AMAZINGDATA_PORT}", flush=True)
-    script = f"""import socket
-socket.setdefaulttimeout(5)
-import AmazingData as ad
-try:
-    ad.login(username='{AMAZINGDATA_USERNAME}', password='{AMAZINGDATA_PASSWORD}', host='{AMAZINGDATA_HOST}', port={AMAZINGDATA_PORT})
-    print('LOGIN_OK')
-except Exception as e:
-    print('LOGIN_FAILED:' + str(e))
-"""
-    env = os.environ.copy()
-    env["PYTHONUNBUFFERED"] = "1"
-    try:
-        result = subprocess.run(
-            [sys.executable, "-c", script],
-            capture_output=True, text=True, timeout=8, env=env,
-        )
-        stdout = (result.stdout or "").strip()
-        stderr = (result.stderr or "").strip()
-        if result.returncode == 0 and "LOGIN_OK" in stdout:
-            client_ref._logged_in = True
-            print(f"AmazingData SDK 登录成功 (host={AMAZINGDATA_HOST}:{AMAZINGDATA_PORT})", flush=True)
-        else:
-            client_ref._logged_in = False
-            out = stdout[:500] if stdout else stderr[:500]
-            print(f"AmazingData SDK 登录失败 (rc={result.returncode}): {out}", flush=True)
-    except subprocess.TimeoutExpired:
-        client_ref._logged_in = False
-        print("AmazingData SDK 登录超时 (30s)", flush=True)
-    except Exception as e:
-        client_ref._logged_in = False
-        print(f"AmazingData SDK 登录子进程异常: {e}", flush=True)
-    print("[login] 子进程登录线程结束", flush=True)
+    def _do_login(self):
+        try:
+            print(f"[login] 登录 host={AMAZINGDATA_HOST}:{AMAZINGDATA_PORT}", flush=True)
+            import socket
+            socket.setdefaulttimeout(5)
+            self._get_ad().login(
+                username=AMAZINGDATA_USERNAME,
+                password=AMAZINGDATA_PASSWORD,
+                host=AMAZINGDATA_HOST,
+                port=AMAZINGDATA_PORT,
+            )
+            self._logged_in = True
+            print(f"[login] 成功", flush=True)
+        except Exception as e:
+            self._logged_in = False
+            print(f"[login] 失败: {e}", flush=True)
 
     # ==================== 基础数据 ====================
 

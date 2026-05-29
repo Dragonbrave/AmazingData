@@ -7,17 +7,6 @@ RUN yum install -y gcc gcc-c++ make wget perl-core bzip2-devel libffi-devel \
                    zlib-devel && \
     yum clean all
 
-RUN yum install -y centos-release-scl && \
-    for f in /etc/yum.repos.d/CentOS-SCLo-*.repo; do \
-        [ -f "$f" ] && sed -i 's/mirrorlist/#mirrorlist/g' "$f" && \
-        sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' "$f"; \
-    done && \
-    yum install -y devtoolset-9-gcc devtoolset-9-gcc-c++ && \
-    yum clean all
-
-ENV PATH=/opt/rh/devtoolset-9/root/usr/bin:${PATH}
-ENV LD_LIBRARY_PATH=/opt/rh/devtoolset-9/root/usr/lib64:/opt/rh/devtoolset-9/root/usr/lib:${LD_LIBRARY_PATH}
-
 RUN wget -q https://www.openssl.org/source/openssl-1.1.1w.tar.gz && \
     tar xzf openssl-1.1.1w.tar.gz && \
     cd openssl-1.1.1w && \

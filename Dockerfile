@@ -8,6 +8,10 @@ RUN yum install -y gcc gcc-c++ make wget perl-core bzip2-devel libffi-devel \
     yum clean all
 
 RUN yum install -y centos-release-scl && \
+    for f in /etc/yum.repos.d/CentOS-SCLo-*.repo; do \
+        [ -f "$f" ] && sed -i 's/mirrorlist/#mirrorlist/g' "$f" && \
+        sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' "$f"; \
+    done && \
     yum install -y devtoolset-9-gcc devtoolset-9-gcc-c++ && \
     yum clean all
 

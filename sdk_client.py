@@ -163,7 +163,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date
@@ -181,7 +181,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date
@@ -198,7 +198,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date
@@ -215,7 +215,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date
@@ -232,7 +232,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date
@@ -248,7 +248,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date
@@ -266,7 +266,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date
@@ -282,7 +282,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date
@@ -298,7 +298,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date
@@ -314,7 +314,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date
@@ -330,7 +330,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date
@@ -348,7 +348,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date
@@ -364,7 +364,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date
@@ -382,7 +382,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date
@@ -398,7 +398,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date
@@ -416,7 +416,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date
@@ -432,7 +432,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date
@@ -450,7 +450,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date
@@ -466,7 +466,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date
@@ -482,7 +482,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date
@@ -558,7 +558,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date
@@ -574,7 +574,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date
@@ -590,7 +590,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date
@@ -606,7 +606,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date
@@ -622,7 +622,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date
@@ -638,7 +638,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date
@@ -654,7 +654,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date
@@ -670,7 +670,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date
@@ -688,7 +688,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date
@@ -704,7 +704,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date
@@ -720,7 +720,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date
@@ -738,7 +738,7 @@ class AmazingDataClient:
         kwargs = {}
         if local_path:
             kwargs["local_path"] = local_path
-        if not is_local:
+        if is_local:
             kwargs["is_local"] = is_local
         if begin_date:
             kwargs["begin_date"] = begin_date

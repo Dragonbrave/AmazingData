@@ -1,48 +1,11 @@
-FROM centos:7
+FROM rockylinux:8
 
-RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*.repo && \
-    sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*.repo
+RUN dnf module enable -y python3.11:3.11 && \
+    dnf install -y python3.11 python3.11-pip && \
+    dnf clean all
 
-RUN yum install -y gcc gcc-c++ make wget perl-core bzip2-devel libffi-devel \
-                   zlib-devel && \
-    yum clean all
-
-# Install centos-release-scl; yum may error on newly-added SCL repos (mirrorlist
-# unreachable for EOL CentOS 7), but the package is still installed. We use ';'
-# so the sed loop always runs to redirect SCL repos to vault before installing
-# devtoolset-9 (GCC 9.x, needed to build scipy>=1.15 from source).
-RUN yum install -y centos-release-scl; \
-    for f in /etc/yum.repos.d/CentOS-SCLo-*.repo; do \
-        [ -f "$f" ] && sed -i 's/mirrorlist/#mirrorlist/g' "$f" && \
-        sed -i 's|baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' "$f"; \
-    done && \
-    yum clean all
-
-RUN yum install -y devtoolset-9-gcc devtoolset-9-gcc-c++ && \
-    yum clean all
-
-ENV PATH=/opt/rh/devtoolset-9/root/usr/bin:${PATH}
-ENV LD_LIBRARY_PATH=/opt/rh/devtoolset-9/root/usr/lib64:/opt/rh/devtoolset-9/root/usr/lib:${LD_LIBRARY_PATH}
-
-RUN wget -q https://www.openssl.org/source/openssl-1.1.1w.tar.gz && \
-    tar xzf openssl-1.1.1w.tar.gz && \
-    cd openssl-1.1.1w && \
-    ./config --prefix=/usr/local/openssl --openssldir=/usr/local/openssl shared zlib && \
-    make -j$(nproc) && make install && \
-    cd / && rm -rf openssl-1.1.1w openssl-1.1.1w.tar.gz
-
-RUN wget -q https://www.python.org/ftp/python/3.11.9/Python-3.11.9.tgz && \
-    tar xzf Python-3.11.9.tgz && \
-    cd Python-3.11.9 && \
-    ./configure --with-system-ffi \
-        --with-openssl=/usr/local/openssl \
-        --with-openssl-rpath=auto && \
-    make -j$(nproc) && \
-    make altinstall && \
-    cd / && rm -rf Python-3.11.9 Python-3.11.9.tgz
-
-RUN ln -sf /usr/local/bin/python3.11 /usr/bin/python && \
-    ln -sf /usr/local/bin/pip3.11 /usr/bin/pip
+RUN ln -sf /usr/bin/python3.11 /usr/bin/python && \
+    ln -sf /usr/bin/pip3.11 /usr/bin/pip
 
 RUN pip install --upgrade pip
 

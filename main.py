@@ -59,6 +59,7 @@ class DividendRequest(BaseModel):
 # ==================== 健康检查 ====================
 
 @app.get("/health")
+@app.get("/ready")
 @app.get("/")
 def health():
     return {"status": "ok", "timestamp": datetime.now().isoformat()}

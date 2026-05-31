@@ -48,24 +48,47 @@ def cached(ttl: int):
     return decorator
 
 
-def df_to_records(df: pd.DataFrame) -> list:
-    """DataFrame 转字典列表"""
-    if df is None or df.empty:
+def df_to_records(df) -> list:
+    """DataFrame 或 dict 转字典列表"""
+    if df is None:
         return []
-    df_copy = df.copy()
-    for col in df_copy.select_dtypes(include=["datetime64"]).columns:
-        df_copy[col] = df_copy[col].astype(str)
-    if df_copy.index.name is not None or not isinstance(df_copy.index, pd.RangeIndex):
-        df_copy = df_copy.reset_index()
+    if isinstance(df, dict):
+        records = []
+        for key, val in df.items():
+            if val is None:
+                continue
+            if isinstance(val, pd.DataFrame):
+                if val.empty:
+                    continue
+                df_copy = val.copy()
+                for col in df_copy.select_dtypes(include=["datetime64"]).columns:
+                    df_copy[col] = df_copy[col].astype(str)
+                if df_copy.index.name is not None or not isinstance(df_copy.index, pd.RangeIndex):
+                    df_copy = df_copy.reset_index()
+                    for col in df_copy.select_dtypes(include=["datetime64"]).columns:
+                        df_copy[col] = df_copy[col].astype(str)
+                records.extend(df_copy.to_dict(orient="records"))
+            else:
+                records.append(val)
+        return records
+    if isinstance(df, pd.DataFrame):
+        if df.empty:
+            return []
+        df_copy = df.copy()
         for col in df_copy.select_dtypes(include=["datetime64"]).columns:
             df_copy[col] = df_copy[col].astype(str)
-    records = df_copy.to_dict(orient="records")
-    del df, df_copy
-    return records
+        if df_copy.index.name is not None or not isinstance(df_copy.index, pd.RangeIndex):
+            df_copy = df_copy.reset_index()
+            for col in df_copy.select_dtypes(include=["datetime64"]).columns:
+                df_copy[col] = df_copy[col].astype(str)
+        return df_copy.to_dict(orient="records")
+    return []
 
 
 def dict_df_to_records(result: dict) -> dict:
     """dict[code, DataFrame] 转 dict[code, records]，并释放 DataFrame 内存"""
+    if not isinstance(result, dict):
+        return {}
     records = {}
     for code, df in result.items():
         records[code] = df_to_records(df)

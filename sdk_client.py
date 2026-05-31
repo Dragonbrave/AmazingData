@@ -307,7 +307,7 @@ class AmazingDataClient:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(self._get_ad().InfoData().get_forecast(code_list, **kwargs))
+        return df_to_records(self._get_ad().InfoData().get_profit_notice(code_list, **kwargs))
 
     # ==================== 股东股本数据 ====================
 
@@ -325,7 +325,7 @@ class AmazingDataClient:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(self._get_ad().InfoData().get_top10_holder(code_list, **kwargs))
+        return df_to_records(self._get_ad().InfoData().get_share_holder(code_list, **kwargs))
 
     def get_shareholder_num(
         self, code_list: List[str],
@@ -341,7 +341,7 @@ class AmazingDataClient:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(self._get_ad().InfoData().get_shareholder_num(code_list, **kwargs))
+        return df_to_records(self._get_ad().InfoData().get_holder_num(code_list, **kwargs))
 
     def get_share_structure(
         self, code_list: List[str],
@@ -357,7 +357,7 @@ class AmazingDataClient:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(self._get_ad().InfoData().get_share_structure(code_list, **kwargs))
+        return df_to_records(self._get_ad().InfoData().get_equity_structure(code_list, **kwargs))
 
     def get_pledge_info(
         self, code_list: List[str],
@@ -373,7 +373,7 @@ class AmazingDataClient:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(self._get_ad().InfoData().get_pledge_info(code_list, **kwargs))
+        return df_to_records(self._get_ad().InfoData().get_equity_pledge_freeze(code_list, **kwargs))
 
     def get_restricted_share(
         self, code_list: List[str],
@@ -389,7 +389,7 @@ class AmazingDataClient:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(self._get_ad().InfoData().get_restricted_share(code_list, **kwargs))
+        return df_to_records(self._get_ad().InfoData().get_equity_restricted(code_list, **kwargs))
 
     # ==================== 股东权益 ====================
 
@@ -423,7 +423,7 @@ class AmazingDataClient:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(self._get_ad().InfoData().get_allotment(code_list, **kwargs))
+        return df_to_records(self._get_ad().InfoData().get_right_issue(code_list, **kwargs))
 
     # ==================== 融资融券 ====================
 
@@ -441,7 +441,7 @@ class AmazingDataClient:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(self._get_ad().InfoData().get_margin_trade(code_list, **kwargs))
+        return df_to_records(self._get_ad().InfoData().get_margin_summary(code_list, **kwargs))
 
     def get_margin_detail(
         self, code_list: List[str],
@@ -649,7 +649,7 @@ class AmazingDataClient:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(self._get_ad().InfoData().get_cb_info(code_list, **kwargs))
+        return df_to_records(self._get_ad().InfoData().get_kzz_issuance(code_list, **kwargs))
 
     def get_cb_share(
         self, code_list: List[str],
@@ -665,7 +665,7 @@ class AmazingDataClient:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(self._get_ad().InfoData().get_cb_share(code_list, **kwargs))
+        return df_to_records(self._get_ad().InfoData().get_kzz_share(code_list, **kwargs))
 
     def get_cb_conversion(
         self, code_list: List[str],
@@ -681,7 +681,7 @@ class AmazingDataClient:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(self._get_ad().InfoData().get_cb_conversion(code_list, **kwargs))
+        return df_to_records(self._get_ad().InfoData().get_kzz_conv(code_list, **kwargs))
 
     def get_cb_conversion_change(
         self, code_list: List[str],
@@ -697,7 +697,7 @@ class AmazingDataClient:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(self._get_ad().InfoData().get_cb_conversion_change(code_list, **kwargs))
+        return df_to_records(self._get_ad().InfoData().get_kzz_conv_change(code_list, **kwargs))
 
     def get_cb_correction(
         self, code_list: List[str],
@@ -729,7 +729,7 @@ class AmazingDataClient:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(self._get_ad().InfoData().get_cb_redemption(code_list, **kwargs))
+        return df_to_records(self._get_ad().InfoData().get_kzz_call(code_list, **kwargs))
 
     def get_cb_putback(
         self, code_list: List[str],
@@ -745,7 +745,7 @@ class AmazingDataClient:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(self._get_ad().InfoData().get_cb_putback(code_list, **kwargs))
+        return df_to_records(self._get_ad().InfoData().get_kzz_put(code_list, **kwargs))
 
     def get_cb_put_call_item(
         self, code_list: List[str],
@@ -809,7 +809,7 @@ class AmazingDataClient:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(self._get_ad().InfoData().get_cb_call(code_list, **kwargs))
+        return df_to_records(self._get_ad().InfoData().get_kzz_call(code_list, **kwargs))
 
     def get_cb_suspend(
         self, code_list: List[str],
@@ -825,7 +825,7 @@ class AmazingDataClient:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(self._get_ad().InfoData().get_cb_suspend(code_list, **kwargs))
+        return df_to_records(self._get_ad().InfoData().get_kzz_suspend(code_list, **kwargs))
 
     # ==================== 期权 ====================
 

@@ -863,7 +863,8 @@ def get_treasury(
     end_date: Optional[int] = Query(default=None),
 ):
     try:
-        data = client.get_treasury(_parse_code_list(code_list), begin_date=begin_date, end_date=end_date)
+        term_list = _parse_code_list(code_list)
+        data = client.get_treasury(term_list, begin_date=begin_date, end_date=end_date)
         return {"count": len(data), "data": data}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

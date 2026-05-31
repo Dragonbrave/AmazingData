@@ -475,7 +475,7 @@ class AmazingDataClient:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(self._get_ad().InfoData().get_block_trade(code_list, **kwargs))
+        return df_to_records(self._get_ad().InfoData().get_block_trading(code_list, **kwargs))
 
     def get_abnormal_trade(
         self, code_list: List[str],
@@ -578,13 +578,13 @@ class AmazingDataClient:
     # ==================== 申万指数 ====================
 
     def get_shenwan_index_info(self) -> list:
-        return df_to_records(self._get_ad().InfoData().get_shenwan_index_info())
+        return df_to_records(self._get_ad().InfoData().get_index_constituent([], is_local=False))
 
     def get_shenwan_index_component(self, code_list: List[str]) -> list:
-        return df_to_records(self._get_ad().InfoData().get_shenwan_index_component(code_list))
+        return df_to_records(self._get_ad().InfoData().get_index_constituent(code_list, is_local=False))
 
     def get_shenwan_index_component_weight(self, code_list: List[str]) -> list:
-        return df_to_records(self._get_ad().InfoData().get_shenwan_index_component_weight(code_list))
+        return df_to_records(self._get_ad().InfoData().get_index_weight(code_list, is_local=False))
 
     def get_shenwan_index_data(
         self, code_list: List[str],
@@ -602,7 +602,7 @@ class AmazingDataClient:
     def get_industry_index_info(
         self, local_path: Optional[str] = None, is_local: bool = False,
     ) -> list:
-        return df_to_records(self._get_ad().InfoData().get_industry_index_info(
+        return df_to_records(self._get_ad().InfoData().get_industry_base_info(
             local_path=local_path, is_local=is_local
         ))
 
@@ -610,7 +610,7 @@ class AmazingDataClient:
         self, code_list: List[str],
         local_path: Optional[str] = None, is_local: bool = False,
     ) -> list:
-        return df_to_records(self._get_ad().InfoData().get_industry_index_component(
+        return df_to_records(self._get_ad().InfoData().get_industry_constituent(
             code_list, local_path=local_path, is_local=is_local
         ))
 
@@ -618,7 +618,7 @@ class AmazingDataClient:
         self, code_list: List[str],
         local_path: Optional[str] = None, is_local: bool = False,
     ) -> list:
-        return df_to_records(self._get_ad().InfoData().get_industry_index_component_weight(
+        return df_to_records(self._get_ad().InfoData().get_industry_weight(
             code_list, local_path=local_path, is_local=is_local
         ))
 
@@ -631,7 +631,7 @@ class AmazingDataClient:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(self._get_ad().InfoData().get_industry_index_data(code_list, **kwargs))
+        return df_to_records(self._get_ad().InfoData().get_industry_daily(code_list, **kwargs))
 
     # ==================== 可转债 ====================
 
@@ -912,7 +912,7 @@ class AmazingDataClient:
     # ==================== 国债 ====================
 
     def get_treasury(
-        self, code_list: List[str],
+        self, term_list: List[str],
         local_path: Optional[str] = None, is_local: bool = False,
         begin_date: Optional[int] = None, end_date: Optional[int] = None,
     ) -> list:
@@ -925,7 +925,7 @@ class AmazingDataClient:
             kwargs["begin_date"] = begin_date
         if end_date:
             kwargs["end_date"] = end_date
-        return df_to_records(self._get_ad().InfoData().get_treasury(code_list, **kwargs))
+        return df_to_records(self._get_ad().InfoData().get_treasury_yield(term_list, **kwargs))
 
 
 client = AmazingDataClient()

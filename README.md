@@ -387,6 +387,12 @@ GET /api/snapshot
 |------|------|
 | `/api/market/block_trade` | 大宗交易记录 |
 | `/api/market/abnormal_trade` | 大额交易记录 |
+| `/api/market/long_hu_bang` | 龙虎榜 |
+
+**调用示例**：
+```
+GET /api/market/block_trade?code_list=000001.SZ&begin_date=20240101&end_date=20240601
+```
 
 ---
 
@@ -399,6 +405,7 @@ GET /api/snapshot
 | `/api/etf/snapshot` | ETF 行情快照（参数同 /api/snapshot） |
 | `/api/etf/daily_subscription` | ETF 每日申赎清单 |
 | `/api/etf/share` | ETF 份额变动 |
+| `/api/etf/nav` | ETF 基金净值 |
 | `/api/etf/iopv` | ETF 每日 IOPV |
 
 ---
@@ -433,8 +440,12 @@ GET /api/snapshot
 | `/api/cb/share` | 可转债份额变动 |
 | `/api/cb/conversion` | 可转债转股数据 |
 | `/api/cb/conversion_change` | 可转债转股变动 |
+| `/api/cb/correction` | 可转债修正数据 |
 | `/api/cb/redemption` | 可转债赎回信息 |
 | `/api/cb/putback` | 可转债回售信息 |
+| `/api/cb/put_call_item` | 可转债回售赎回条款 |
+| `/api/cb/put_explanation` | 可转债回售条款执行说明 |
+| `/api/cb/call_explanation` | 可转债赎回条款执行说明 |
 | `/api/cb/call` | 可转债回售价格 |
 | `/api/cb/suspend` | 可转债停复牌信息 |
 
@@ -447,6 +458,8 @@ GET /api/snapshot
 | `/api/option/info` | 期权基本信息 |
 | `/api/option/contract` | 期权合约信息 |
 | `/api/option/contract_change` | 期权合约变更 |
+| `/api/option/std_ctr_specs` | 期权标准合约属性 |
+| `/api/option/mon_ctr_specs` | 期权月合约属性变动 |
 
 ---
 
@@ -1176,6 +1189,7 @@ GET /api/margin/trade?code_list=000001.SZ&begin_date=20240601&end_date=20240630
 |------|------|
 | `/api/market/block_trade` | 大宗交易记录 |
 | `/api/market/abnormal_trade` | 大额交易记录 |
+| `/api/market/long_hu_bang` | 龙虎榜 |
 
 **调用示例**：
 ```
@@ -1224,6 +1238,12 @@ GET /api/etf/share?code_list=510050.SH&begin_date=20240101&end_date=20240601
 GET /api/etf/iopv?code_list=510050.SH&begin_date=20240601&end_date=20240630
 ```
 
+#### 11.7 ETF 基金净值
+
+```
+GET /api/etf/nav?code_list=510050.SH&begin_date=20240601&end_date=20240630
+```
+
 ---
 
 ### 12. 申万指数
@@ -1258,8 +1278,12 @@ GET /api/etf/iopv?code_list=510050.SH&begin_date=20240601&end_date=20240630
 | `/api/cb/share` | 可转债份额变动 |
 | `/api/cb/conversion` | 可转债转股数据 |
 | `/api/cb/conversion_change` | 可转债转股变动 |
+| `/api/cb/correction` | 可转债修正数据 |
 | `/api/cb/redemption` | 可转债赎回信息 |
 | `/api/cb/putback` | 可转债回售信息 |
+| `/api/cb/put_call_item` | 可转债回售赎回条款 |
+| `/api/cb/put_explanation` | 可转债回售条款执行说明 |
+| `/api/cb/call_explanation` | 可转债赎回条款执行说明 |
 | `/api/cb/call` | 可转债回售价格 |
 | `/api/cb/suspend` | 可转债停复牌信息 |
 
@@ -1280,6 +1304,8 @@ GET /api/cb/conversion?code_list=110043.SH&begin_date=20240101&end_date=20240601
 | `/api/option/info` | 期权基本信息 |
 | `/api/option/contract` | 期权合约信息 |
 | `/api/option/contract_change` | 期权合约变更 |
+| `/api/option/std_ctr_specs` | 期权标准合约属性 |
+| `/api/option/mon_ctr_specs` | 期权月合约属性变动 |
 
 **调用示例**：
 ```

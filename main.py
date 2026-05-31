@@ -450,6 +450,19 @@ def get_abnormal_trade(
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.get("/api/market/long_hu_bang")
+def get_long_hu_bang(
+    code_list: str = Query(),
+    begin_date: Optional[int] = Query(default=None),
+    end_date: Optional[int] = Query(default=None),
+):
+    try:
+        data = client.get_long_hu_bang(_parse_code_list(code_list), begin_date=begin_date, end_date=end_date)
+        return {"count": len(data), "data": data}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 # ==================== ETF ====================
 
 @app.get("/api/etf/list")
@@ -514,6 +527,19 @@ def get_etf_iopv(
 ):
     try:
         data = client.get_etf_iopv(_parse_code_list(code_list), begin_date=begin_date, end_date=end_date)
+        return {"count": len(data), "data": data}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/etf/nav")
+def get_fund_nav(
+    code_list: str = Query(),
+    begin_date: Optional[int] = Query(default=None),
+    end_date: Optional[int] = Query(default=None),
+):
+    try:
+        data = client.get_fund_nav(_parse_code_list(code_list), begin_date=begin_date, end_date=end_date)
         return {"count": len(data), "data": data}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -657,6 +683,19 @@ def get_cb_conversion_change(
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.get("/api/cb/correction")
+def get_cb_correction(
+    code_list: str = Query(),
+    begin_date: Optional[int] = Query(default=None),
+    end_date: Optional[int] = Query(default=None),
+):
+    try:
+        data = client.get_cb_correction(_parse_code_list(code_list), begin_date=begin_date, end_date=end_date)
+        return {"count": len(data), "data": data}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.get("/api/cb/redemption")
 def get_cb_redemption(
     code_list: str = Query(),
@@ -678,6 +717,45 @@ def get_cb_putback(
 ):
     try:
         data = client.get_cb_putback(_parse_code_list(code_list), begin_date=begin_date, end_date=end_date)
+        return {"count": len(data), "data": data}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/cb/put_call_item")
+def get_cb_put_call_item(
+    code_list: str = Query(),
+    begin_date: Optional[int] = Query(default=None),
+    end_date: Optional[int] = Query(default=None),
+):
+    try:
+        data = client.get_cb_put_call_item(_parse_code_list(code_list), begin_date=begin_date, end_date=end_date)
+        return {"count": len(data), "data": data}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/cb/put_explanation")
+def get_cb_put_explanation(
+    code_list: str = Query(),
+    begin_date: Optional[int] = Query(default=None),
+    end_date: Optional[int] = Query(default=None),
+):
+    try:
+        data = client.get_cb_put_explanation(_parse_code_list(code_list), begin_date=begin_date, end_date=end_date)
+        return {"count": len(data), "data": data}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/cb/call_explanation")
+def get_cb_call_explanation(
+    code_list: str = Query(),
+    begin_date: Optional[int] = Query(default=None),
+    end_date: Optional[int] = Query(default=None),
+):
+    try:
+        data = client.get_cb_call_explanation(_parse_code_list(code_list), begin_date=begin_date, end_date=end_date)
         return {"count": len(data), "data": data}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -745,6 +823,32 @@ def get_option_contract_change(
 ):
     try:
         data = client.get_option_contract_change(_parse_code_list(code_list), begin_date=begin_date, end_date=end_date)
+        return {"count": len(data), "data": data}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/option/std_ctr_specs")
+def get_option_std_ctr_specs(
+    code_list: str = Query(),
+    begin_date: Optional[int] = Query(default=None),
+    end_date: Optional[int] = Query(default=None),
+):
+    try:
+        data = client.get_option_std_ctr_specs(_parse_code_list(code_list), begin_date=begin_date, end_date=end_date)
+        return {"count": len(data), "data": data}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/option/mon_ctr_specs")
+def get_option_mon_ctr_specs(
+    code_list: str = Query(),
+    begin_date: Optional[int] = Query(default=None),
+    end_date: Optional[int] = Query(default=None),
+):
+    try:
+        data = client.get_option_mon_ctr_specs(_parse_code_list(code_list), begin_date=begin_date, end_date=end_date)
         return {"count": len(data), "data": data}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

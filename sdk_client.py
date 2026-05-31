@@ -493,6 +493,22 @@ class AmazingDataClient:
             kwargs["end_date"] = end_date
         return df_to_records(self._get_ad().InfoData().get_abnormal_trade(code_list, **kwargs))
 
+    def get_long_hu_bang(
+        self, code_list: List[str],
+        local_path: Optional[str] = None, is_local: bool = False,
+        begin_date: Optional[int] = None, end_date: Optional[int] = None,
+    ) -> list:
+        kwargs = {}
+        if local_path:
+            kwargs["local_path"] = local_path
+        if is_local:
+            kwargs["is_local"] = is_local
+        if begin_date:
+            kwargs["begin_date"] = begin_date
+        if end_date:
+            kwargs["end_date"] = end_date
+        return df_to_records(self._get_ad().InfoData().get_long_hu_bang(code_list, **kwargs))
+
     # ==================== ETF 数据 ====================
 
     def get_etf_daily_subscription(
@@ -542,6 +558,22 @@ class AmazingDataClient:
         if end_date:
             kwargs["end_date"] = end_date
         return df_to_records(self._get_ad().InfoData().get_etf_iopv(code_list, **kwargs))
+
+    def get_fund_nav(
+        self, code_list: List[str],
+        local_path: Optional[str] = None, is_local: bool = False,
+        begin_date: Optional[int] = None, end_date: Optional[int] = None,
+    ) -> list:
+        kwargs = {}
+        if local_path:
+            kwargs["local_path"] = local_path
+        if is_local:
+            kwargs["is_local"] = is_local
+        if begin_date:
+            kwargs["begin_date"] = begin_date
+        if end_date:
+            kwargs["end_date"] = end_date
+        return df_to_records(self._get_ad().InfoData().get_fund_nav(code_list, **kwargs))
 
     # ==================== 申万指数 ====================
 
@@ -667,6 +699,22 @@ class AmazingDataClient:
             kwargs["end_date"] = end_date
         return df_to_records(self._get_ad().InfoData().get_cb_conversion_change(code_list, **kwargs))
 
+    def get_cb_correction(
+        self, code_list: List[str],
+        local_path: Optional[str] = None, is_local: bool = False,
+        begin_date: Optional[int] = None, end_date: Optional[int] = None,
+    ) -> list:
+        kwargs = {}
+        if local_path:
+            kwargs["local_path"] = local_path
+        if is_local:
+            kwargs["is_local"] = is_local
+        if begin_date:
+            kwargs["begin_date"] = begin_date
+        if end_date:
+            kwargs["end_date"] = end_date
+        return df_to_records(self._get_ad().InfoData().get_kzz_corr(code_list, **kwargs))
+
     def get_cb_redemption(
         self, code_list: List[str],
         local_path: Optional[str] = None, is_local: bool = False,
@@ -698,6 +746,54 @@ class AmazingDataClient:
         if end_date:
             kwargs["end_date"] = end_date
         return df_to_records(self._get_ad().InfoData().get_cb_putback(code_list, **kwargs))
+
+    def get_cb_put_call_item(
+        self, code_list: List[str],
+        local_path: Optional[str] = None, is_local: bool = False,
+        begin_date: Optional[int] = None, end_date: Optional[int] = None,
+    ) -> list:
+        kwargs = {}
+        if local_path:
+            kwargs["local_path"] = local_path
+        if is_local:
+            kwargs["is_local"] = is_local
+        if begin_date:
+            kwargs["begin_date"] = begin_date
+        if end_date:
+            kwargs["end_date"] = end_date
+        return df_to_records(self._get_ad().InfoData().get_kzz_put_call_item(code_list, **kwargs))
+
+    def get_cb_put_explanation(
+        self, code_list: List[str],
+        local_path: Optional[str] = None, is_local: bool = False,
+        begin_date: Optional[int] = None, end_date: Optional[int] = None,
+    ) -> list:
+        kwargs = {}
+        if local_path:
+            kwargs["local_path"] = local_path
+        if is_local:
+            kwargs["is_local"] = is_local
+        if begin_date:
+            kwargs["begin_date"] = begin_date
+        if end_date:
+            kwargs["end_date"] = end_date
+        return df_to_records(self._get_ad().InfoData().get_kzz_put_explanation(code_list, **kwargs))
+
+    def get_cb_call_explanation(
+        self, code_list: List[str],
+        local_path: Optional[str] = None, is_local: bool = False,
+        begin_date: Optional[int] = None, end_date: Optional[int] = None,
+    ) -> list:
+        kwargs = {}
+        if local_path:
+            kwargs["local_path"] = local_path
+        if is_local:
+            kwargs["is_local"] = is_local
+        if begin_date:
+            kwargs["begin_date"] = begin_date
+        if end_date:
+            kwargs["end_date"] = end_date
+        return df_to_records(self._get_ad().InfoData().get_kzz_call_explanation(code_list, **kwargs))
 
     def get_cb_call(
         self, code_list: List[str],
@@ -780,6 +876,38 @@ class AmazingDataClient:
         if end_date:
             kwargs["end_date"] = end_date
         return df_to_records(self._get_ad().InfoData().get_option_contract_change(code_list, **kwargs))
+
+    def get_option_std_ctr_specs(
+        self, code_list: List[str],
+        local_path: Optional[str] = None, is_local: bool = False,
+        begin_date: Optional[int] = None, end_date: Optional[int] = None,
+    ) -> list:
+        kwargs = {}
+        if local_path:
+            kwargs["local_path"] = local_path
+        if is_local:
+            kwargs["is_local"] = is_local
+        if begin_date:
+            kwargs["begin_date"] = begin_date
+        if end_date:
+            kwargs["end_date"] = end_date
+        return df_to_records(self._get_ad().InfoData().get_option_std_ctr_specs(code_list, **kwargs))
+
+    def get_option_mon_ctr_specs(
+        self, code_list: List[str],
+        local_path: Optional[str] = None, is_local: bool = False,
+        begin_date: Optional[int] = None, end_date: Optional[int] = None,
+    ) -> list:
+        kwargs = {}
+        if local_path:
+            kwargs["local_path"] = local_path
+        if is_local:
+            kwargs["is_local"] = is_local
+        if begin_date:
+            kwargs["begin_date"] = begin_date
+        if end_date:
+            kwargs["end_date"] = end_date
+        return df_to_records(self._get_ad().InfoData().get_option_mon_ctr_specs(code_list, **kwargs))
 
     # ==================== 国债 ====================
 
